@@ -1,0 +1,11 @@
+export const MAX_MESSAGE_LENGTH = 500;
+export const MAX_DISPLAY_NAME_LENGTH = 20;
+export const MAX_FILE_SIZE = 3 * 1024 * 1024 * 1024; // 3GB
+export const MAX_SUBTITLE_SIZE = 5 * 1024 * 1024; // 5MB
+export const SYNC_INTERVAL_MS = 3000;
+export const MAX_DRIFT_MS = 500;
+export const MAX_VOICE_PARTICIPANTS = 8;
+export const ROOM_EXPIRY_MS = 60 * 60 * 1000; // 1 hour
+export const SUPPORTED_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/x-matroska'];
+export const SUPPORTED_SUBTITLE_TYPES = ['.srt', '.vtt'];
+export const CHAT_RATE_LIMIT = { maxMessages: 5, windowMs: 5000 };
