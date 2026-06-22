@@ -22,6 +22,9 @@ function getIceServers(): RTCIceServer[] {
   const servers: RTCIceServer[] = [
     { urls: 'stun:stun.l.google.com:19302' },
     { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'stun:stun2.l.google.com:19302' },
+    { urls: 'stun:stun3.l.google.com:19302' },
+    { urls: 'stun:stun4.l.google.com:19302' },
   ];
 
   const turnUrl = process.env.NEXT_PUBLIC_TURN_URL;
@@ -29,12 +32,35 @@ function getIceServers(): RTCIceServer[] {
   const turnCredential = process.env.NEXT_PUBLIC_TURN_CREDENTIAL;
 
   if (turnUrl && turnUsername && turnCredential) {
+    // User-configured TURN server (Metered, Cloudflare, etc.)
     servers.push({
       urls: turnUrl,
       username: turnUsername,
       credential: turnCredential,
     });
   }
+
+  // Free TURN fallbacks from Open Relay Project (openrelayproject.org)
+  // These are free public TURN servers — not guaranteed uptime but work as fallback
+  servers.push(
+    {
+      urls: 'turn:openrelay.metered.ca:80',
+      username: 'openrelayproject',
+      credential: 'openrelayproject',
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:443',
+      username: 'openrelayproject',
+      credential: 'openrelayproject',
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+      username: 'openrelayproject',
+      credential: 'openrelayproject',
+    },
+  );
+
+  console.log('[WebRTC] ICE servers configured:', servers.length, 'servers', turnUrl ? '(with custom TURN)' : '(free TURN only)');
 
   return servers;
 }
@@ -90,24 +116,29 @@ export class PeerManager {
 
     // Handle remote tracks
     pc.ontrack = (event) => {
-      const [stream] = event.streams;
-      if (stream) {
-        this.callbacks.onRemoteStream?.(peerId, stream);
-      }
-      this.callbacks.onRemoteTrack?.(peerId, event.track, event.streams[0] || new MediaStream([event.track]));
+      console.log(`[WebRTC] ontrack from ${peerId}: kind=${event.track.kind} readyState=${event.track.readyState} streams=${event.streams.length}`);
+      const stream = event.streams[0] || new MediaStream([event.track]);
+      this.callbacks.onRemoteStream?.(peerId, stream);
+      this.callbacks.onRemoteTrack?.(peerId, event.track, stream);
     };
 
     // Handle connection state changes
     pc.onconnectionstatechange = () => {
+      console.log(`[WebRTC] Connection state (${peerId}): ${pc.connectionState}`);
       if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed' || pc.connectionState === 'closed') {
         this.callbacks.onPeerDisconnected?.(peerId);
       }
     };
 
     pc.oniceconnectionstatechange = () => {
+      console.log(`[WebRTC] ICE state (${peerId}): ${pc.iceConnectionState}`);
       if (pc.iceConnectionState === 'disconnected' || pc.iceConnectionState === 'failed') {
         this.callbacks.onPeerDisconnected?.(peerId);
       }
+    };
+
+    pc.onicegatheringstatechange = () => {
+      console.log(`[WebRTC] ICE gathering (${peerId}): ${pc.iceGatheringState}`);
     };
 
     // If initiator, create offer
@@ -145,6 +176,19 @@ export class PeerManager {
     }
 
     try {
+      // If we're not in a state where we can accept an offer, reset
+      if (pc.signalingState !== 'stable' && pc.signalingState !== 'have-local-offer') {
+        console.warn(`[WebRTC] handleOffer: unexpected state ${pc.signalingState} for ${peerId}, resetting`);
+        this.removePeer(peerId);
+        pc = this.addPeer(peerId, false, socket);
+      }
+
+      // Handle glare: if we have a local offer and receive a remote offer
+      if (pc.signalingState === 'have-local-offer') {
+        console.warn(`[WebRTC] Glare detected for ${peerId}, rolling back local offer`);
+        await pc.setLocalDescription({ type: 'rollback' });
+      }
+
       await pc.setRemoteDescription(new RTCSessionDescription(offer));
       this.remoteDescriptionSet.set(peerId, true);
 
@@ -158,8 +202,9 @@ export class PeerManager {
         targetId: peerId,
         answer: pc.localDescription!,
       } as any);
+      console.log(`[WebRTC] Sent answer to ${peerId}`);
     } catch (err) {
-      console.error('Error handling offer:', err);
+      console.error('[WebRTC] Error handling offer:', err);
     }
   }
 
@@ -168,13 +213,20 @@ export class PeerManager {
     if (!pc) return;
 
     try {
+      // Only accept answer if we're in the right state
+      if (pc.signalingState !== 'have-local-offer') {
+        console.warn(`[WebRTC] handleAnswer: unexpected state ${pc.signalingState} for ${peerId}, ignoring`);
+        return;
+      }
+
       await pc.setRemoteDescription(new RTCSessionDescription(answer));
       this.remoteDescriptionSet.set(peerId, true);
+      console.log(`[WebRTC] Accepted answer from ${peerId}`);
 
       // Process buffered ICE candidates
       await this.processBufferedCandidates(peerId);
     } catch (err) {
-      console.error('Error handling answer:', err);
+      console.error('[WebRTC] Error handling answer:', err);
     }
   }
 
