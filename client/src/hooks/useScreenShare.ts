@@ -13,10 +13,13 @@ const SS_SIGNALING = {
   iceCandidate: 'ss-ice-candidate' as const,
 };
 
+// Module-level state so that the listener instance (in page.tsx) 
+// and the UI instance (in RoomToolbar.tsx) share the same references.
+let globalPeerManager: PeerManager | null = null;
+let globalIsHostSharing = false;
+let globalLocalStream: MediaStream | null = null;
+
 export function useScreenShare(registerListeners = false) {
-  const peerManagerRef = useRef<PeerManager | null>(null);
-  const isHostSharingRef = useRef(false);
-  const localStreamRef = useRef<MediaStream | null>(null);
 
   const {
     isScreenSharing,
@@ -40,9 +43,9 @@ export function useScreenShare(registerListeners = false) {
       useUIStore.getState().addToast({ type: 'info', message: `${data.displayName} started screen sharing` });
 
       // Clean up old PeerManager if exists
-      if (peerManagerRef.current && !isHostSharingRef.current) {
-        peerManagerRef.current.destroy();
-        peerManagerRef.current = null;
+      if (globalPeerManager && !globalIsHostSharing) {
+        globalPeerManager.destroy();
+        globalPeerManager = null;
       }
 
       // Create receiving PeerManager
@@ -62,7 +65,7 @@ export function useScreenShare(registerListeners = false) {
         },
         SS_SIGNALING,
       );
-      peerManagerRef.current = pm;
+      globalPeerManager = pm;
 
       // Tell the host we're ready — this triggers the host to send an offer TO US
       const sharer = useRoomStore.getState().users.find((u) => u.id === data.userId);
@@ -75,9 +78,9 @@ export function useScreenShare(registerListeners = false) {
     // === RECEIVER SIDE: sharing stopped ===
     const handleScreenShareStopped = () => {
       console.log('[SS] 🛑 Screen share stopped');
-      if (peerManagerRef.current && !isHostSharingRef.current) {
-        peerManagerRef.current.destroy();
-        peerManagerRef.current = null;
+      if (globalPeerManager && !globalIsHostSharing) {
+        globalPeerManager.destroy();
+        globalPeerManager = null;
       }
       useScreenShareStore.getState().stopSharing();
     };
@@ -85,15 +88,15 @@ export function useScreenShare(registerListeners = false) {
     // === HOST SIDE: receiver says they're ready ===
     const handleSSReady = (data: any) => {
       console.log('[SS] 🤝 Receiver ready:', data.senderId);
-      const pm = peerManagerRef.current;
-      const stream = localStreamRef.current;
-      if (pm && stream && isHostSharingRef.current) {
+      const pm = globalPeerManager;
+      const stream = globalLocalStream;
+      if (pm && stream && globalIsHostSharing) {
         // NOW create the peer connection and send offer
         console.log('[SS] → Creating peer + sending offer to:', data.senderId);
         pm.addPeer(data.senderId, true, socket);
       } else {
         console.warn('[SS] ss-ready received but not ready to send', {
-          hasPM: !!pm, hasStream: !!stream, isSharing: isHostSharingRef.current
+          hasPM: !!pm, hasStream: !!stream, isSharing: globalIsHostSharing
         });
       }
     };
@@ -101,7 +104,7 @@ export function useScreenShare(registerListeners = false) {
     // === WebRTC signaling ===
     const handleSSOffer = async (data: any) => {
       console.log('[SS] 📨 Got ss-offer from:', data.senderId);
-      const pm = peerManagerRef.current;
+      const pm = globalPeerManager;
       if (pm) {
         await pm.handleOffer(data.senderId, data.offer, socket);
       } else {
@@ -116,21 +119,21 @@ export function useScreenShare(registerListeners = false) {
           },
           SS_SIGNALING,
         );
-        peerManagerRef.current = newPm;
+        globalPeerManager = newPm;
         await newPm.handleOffer(data.senderId, data.offer, socket);
       }
     };
 
     const handleSSAnswer = async (data: any) => {
       console.log('[SS] 📨 Got ss-answer from:', data.senderId);
-      if (peerManagerRef.current) {
-        await peerManagerRef.current.handleAnswer(data.senderId, data.answer);
+      if (globalPeerManager) {
+        await globalPeerManager.handleAnswer(data.senderId, data.answer);
       }
     };
 
     const handleSSIceCandidate = async (data: any) => {
-      if (peerManagerRef.current) {
-        await peerManagerRef.current.handleIceCandidate(data.senderId, data.candidate);
+      if (globalPeerManager) {
+        await globalPeerManager.handleIceCandidate(data.senderId, data.candidate);
       }
     };
 
@@ -164,31 +167,32 @@ export function useScreenShare(registerListeners = false) {
         video: { cursor: 'always' } as MediaTrackConstraints,
         audio: true,
       });
-
-      localStreamRef.current = stream;
+      globalLocalStream = stream;
       useScreenShareStore.getState().setLocalStream(stream);
       useScreenShareStore.getState().startSharing();
-      isHostSharingRef.current = true;
+      globalIsHostSharing = true;
 
       const localUser = useRoomStore.getState().localUser;
       if (localUser) {
         useScreenShareStore.getState().setSharerInfo(localUser.id, localUser.displayName);
       }
 
-      // Create PeerManager with the screen stream
+      // Clean up old
+      if (globalPeerManager) {
+        globalPeerManager.destroy();
+      }
+
+      // Create sending PeerManager
       const pm = new PeerManager(
         {
-          onPeerDisconnected: (peerId) => {
-            console.log('[SS] Send-side peer disconnected:', peerId);
-          },
+          onPeerDisconnected: (peerId) => console.log('[SS] ❌ Peer disconnected:', peerId),
         },
         SS_SIGNALING,
       );
-      pm.setLocalStream(stream);
-      peerManagerRef.current = pm;
+      globalPeerManager = pm;
 
-      // Tell server → server broadcasts to all other users
-      // Each receiver will reply with ss-ready, and THEN we create peer connections
+      // Add local stream tracks to all peers
+      pm.setLocalStream(stream);
       const socket = getSocket();
       socket.emit('screen-share-start');
       console.log('[SS] 📡 Host started sharing, waiting for ss-ready from receivers...');
@@ -208,17 +212,18 @@ export function useScreenShare(registerListeners = false) {
 
   // ─── Host: stop sharing ───
   const stopScreenShare = useCallback(() => {
-    const currentStream = localStreamRef.current;
-    if (currentStream) {
-      currentStream.getTracks().forEach((t) => t.stop());
-      localStreamRef.current = null;
+    // Clean up connections
+    if (globalPeerManager) {
+      globalPeerManager.destroy();
+      globalPeerManager = null;
     }
 
-    if (peerManagerRef.current) {
-      peerManagerRef.current.destroy();
-      peerManagerRef.current = null;
+    if (globalLocalStream) {
+      globalLocalStream.getTracks().forEach((track) => track.stop());
+      globalLocalStream = null;
     }
-    isHostSharingRef.current = false;
+
+    globalIsHostSharing = false;
 
     useScreenShareStore.getState().stopSharing();
     getSocket().emit('screen-share-stop');
@@ -227,9 +232,9 @@ export function useScreenShare(registerListeners = false) {
   // Cleanup
   useEffect(() => {
     return () => {
-      if (peerManagerRef.current) {
-        peerManagerRef.current.destroy();
-        peerManagerRef.current = null;
+      if (globalPeerManager) {
+        globalPeerManager.destroy();
+        globalPeerManager = null;
       }
     };
   }, []);
