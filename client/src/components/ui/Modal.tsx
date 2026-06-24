@@ -63,7 +63,7 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'ma
             </button>
           </div>
         )}
-        <div className="p-6">{children}</div>
+        <div className="p-6 max-h-[85vh] overflow-y-auto [&::-webkit-scrollbar]:hidden">{children}</div>
       </div>
     </div>,
     document.body,

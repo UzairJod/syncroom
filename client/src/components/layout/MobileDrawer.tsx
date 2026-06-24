@@ -6,7 +6,7 @@ import ChatPanel from '@/components/chat/ChatPanel';
 import ParticipantList from '@/components/participants/ParticipantList';
 
 export default function MobileDrawer() {
-  const { sidebarTab, setSidebarTab } = useUIStore();
+  const { sidebarTab, setSidebarTab, sidebarOpen, setSidebarOpen } = useUIStore();
   const [height, setHeight] = useState(40); // percentage
   const [isDragging, setIsDragging] = useState(false);
   const startYRef = useRef(0);
@@ -23,15 +23,21 @@ export default function MobileDrawer() {
     const diff = startYRef.current - e.touches[0].clientY;
     const windowHeight = window.innerHeight;
     const deltaPercent = (diff / windowHeight) * 100;
-    const newHeight = Math.min(85, Math.max(10, startHeightRef.current + deltaPercent));
+    const newHeight = Math.min(85, Math.max(0, startHeightRef.current + deltaPercent));
     setHeight(newHeight);
   }, [isDragging]);
 
   const handleTouchEnd = useCallback(() => {
     setIsDragging(false);
-    // Snap to 40% or 85%
-    setHeight(height > 60 ? 85 : 40);
-  }, [height]);
+    if (height < 20) {
+      setSidebarOpen(false);
+      setHeight(40); // reset for next open
+    } else {
+      setHeight(height > 60 ? 85 : 40);
+    }
+  }, [height, setSidebarOpen]);
+
+  if (!sidebarOpen) return null;
 
   return (
     <>

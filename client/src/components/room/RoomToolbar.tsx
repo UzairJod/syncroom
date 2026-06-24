@@ -8,7 +8,7 @@ import Button from '@/components/ui/Button';
 
 export default function RoomToolbar() {
   const isHost = useRoomStore((s) => s.isHost);
-  const { toggleMediaModal, toggleFullscreen, isFullscreen } = useUIStore();
+  const { toggleMediaModal, toggleFullscreen, isFullscreen, sidebarOpen, setSidebarOpen } = useUIStore();
   const { joinVoice, leaveVoice, toggleMute, isInVoice, isMuted } = useVoiceChat();
   const { startScreenShare, stopScreenShare, isScreenSharing } = useScreenShare();
 
@@ -27,7 +27,23 @@ export default function RoomToolbar() {
   };
 
   return (
-    <div className="flex items-center justify-center gap-2 px-4 py-3 bg-bg-glass backdrop-blur-xl border-t border-border-glass">
+    <div className="flex items-center justify-start sm:justify-center gap-2 px-4 py-3 bg-bg-glass backdrop-blur-xl border-t border-border-glass overflow-x-auto [&::-webkit-scrollbar]:hidden">
+      {/* Mobile Chat Toggle */}
+      <div className="sm:hidden">
+        <Button
+          variant={sidebarOpen ? 'primary' : 'secondary'}
+          size="sm"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          icon={
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+            </svg>
+          }
+        >
+          <span className="hidden sm:inline">Chat</span>
+        </Button>
+      </div>
+
       {/* Voice Controls */}
       <Button
         variant={isInVoice ? 'secondary' : 'primary'}

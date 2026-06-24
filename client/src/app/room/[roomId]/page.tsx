@@ -9,6 +9,7 @@ import { useMediaSync } from '@/hooks/useMediaSync';
 import { useScreenShare } from '@/hooks/useScreenShare';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { useRoomStore } from '@/store/useRoomStore';
+import { useUIStore } from '@/store/useUIStore';
 import RoomHeader from '@/components/room/RoomHeader';
 import RoomToolbar from '@/components/room/RoomToolbar';
 import MediaPlayer from '@/components/room/MediaPlayer';
@@ -33,6 +34,7 @@ export default function RoomPage() {
   useScreenShare(true);
   const { isMobile } = useMediaQuery();
   const localUser = useRoomStore((s) => s.localUser);
+  const isFullscreen = useUIStore((s) => s.isFullscreen);
 
   // Listen for successful join
   useEffect(() => {
@@ -141,14 +143,16 @@ export default function RoomPage() {
 
   // === Room View ===
   return (
-    <div className="h-dvh flex flex-col bg-bg-primary overflow-hidden">
-      <RoomHeader />
+    <div className={`h-dvh flex flex-col bg-bg-primary overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}>
+      <div className={`${isFullscreen ? 'hidden' : 'block'}`}>
+        <RoomHeader />
+      </div>
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden relative bg-black">
         {/* Main content */}
-        <div className="flex-1 flex flex-col overflow-hidden p-4">
+        <div className={`flex-1 flex flex-col overflow-hidden ${isFullscreen ? 'p-0' : 'p-4'}`}>
           <div className="flex-1 flex items-center justify-center">
-            <div className="w-full max-w-5xl">
+            <div className={`w-full flex items-center justify-center ${isFullscreen ? 'h-full max-w-none' : 'max-w-5xl'}`}>
               <MediaPlayer />
             </div>
           </div>
@@ -158,7 +162,9 @@ export default function RoomPage() {
         {!isMobile && <Sidebar />}
       </div>
 
-      <RoomToolbar />
+      <div className={`${isFullscreen ? 'absolute bottom-0 left-0 right-0 z-50 bg-black/60 hover:bg-black/90 transition-colors' : 'block'}`}>
+        <RoomToolbar />
+      </div>
 
       {/* Mobile drawer */}
       {isMobile && <MobileDrawer />}
