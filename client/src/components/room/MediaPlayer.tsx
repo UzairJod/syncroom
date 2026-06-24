@@ -3,6 +3,7 @@
 import { useMediaStore } from '@/store/useMediaStore';
 import { useRoomStore } from '@/store/useRoomStore';
 import { useScreenShareStore } from '@/store/useScreenShareStore';
+import { useUIStore } from '@/store/useUIStore';
 import YouTubePlayer from './YouTubePlayer';
 import VideoPlayer from './VideoPlayer';
 import ScreenShareView from './ScreenShareView';
@@ -38,8 +39,10 @@ export default function MediaPlayer() {
     );
   }
 
+  const isFullscreen = useUIStore((s) => s.isFullscreen);
+
   return (
-    <div className="w-full rounded-2xl overflow-hidden border border-border-glass bg-black">
+    <div className={`w-full bg-black flex items-center justify-center ${isFullscreen ? 'h-full' : 'rounded-2xl overflow-hidden border border-border-glass'}`}>
       {mediaType === 'youtube' && <YouTubePlayer />}
       {mediaType === 'video' && <VideoPlayer />}
     </div>

@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { useMediaStore } from '@/store/useMediaStore';
 import { useRoomStore } from '@/store/useRoomStore';
 import { useMediaSync } from '@/hooks/useMediaSync';
+import { useUIStore } from '@/store/useUIStore';
 
 export default function VideoPlayer() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -118,8 +119,10 @@ export default function VideoPlayer() {
     }
   }, [subtitleState]);
 
+  const isFullscreen = useUIStore((s) => s.isFullscreen);
+
   return (
-    <div className="relative w-full aspect-video bg-black">
+    <div className={`relative w-full bg-black ${isFullscreen ? 'h-full' : 'aspect-video'}`}>
       <video
         ref={videoRef}
         src={videoSrc}

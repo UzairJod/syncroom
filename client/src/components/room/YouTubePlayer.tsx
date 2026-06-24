@@ -4,6 +4,7 @@ import { useEffect, useRef, useCallback } from 'react';
 import { useMediaStore } from '@/store/useMediaStore';
 import { useRoomStore } from '@/store/useRoomStore';
 import { useMediaSync } from '@/hooks/useMediaSync';
+import { useUIStore } from '@/store/useUIStore';
 import { extractYouTubeId } from '@/lib/youtube';
 
 // YouTube IFrame API types
@@ -161,8 +162,10 @@ export default function YouTubePlayer() {
     }, 600);
   }, [isPlaying, currentTime, playbackSpeed, isHost]);
 
+  const isFullscreen = useUIStore((s) => s.isFullscreen);
+
   return (
-    <div ref={containerRef} className="relative w-full aspect-video bg-black">
+    <div ref={containerRef} className={`relative w-full bg-black ${isFullscreen ? 'h-full' : 'aspect-video'}`}>
       <div id="yt-player" className="absolute inset-0 w-full h-full" />
     </div>
   );
