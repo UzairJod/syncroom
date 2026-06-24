@@ -67,11 +67,12 @@ export default function ScreenShareView({ stream, sharerName }: ScreenShareViewP
   }, [stream]); // Runs when the stream object reference changes
 
   const showControls = useUIStore((s) => s.showControls);
+  const isFullscreen = useUIStore((s) => s.isFullscreen);
 
   if (!stream) return null;
 
   return (
-    <div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-border-glass">
+    <div className={`relative w-full bg-black overflow-hidden ${isFullscreen ? 'h-full' : 'aspect-video rounded-2xl border border-border-glass'}`}>
       {/* We use a key based on trackCount to force React to sometimes re-mount the video element if needed,
           but actually just updating srcObject is usually better. Let's just keep the video element stable. */}
       <video
