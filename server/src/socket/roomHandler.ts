@@ -69,6 +69,7 @@ export function registerRoomHandlers(io: TypedServer, socket: TypedSocket): void
         joinedAt: u.joinedAt instanceof Date ? u.joinedAt.getTime() : u.joinedAt,
       })),
       hostId: roomState.hostId,
+      screenShare: roomState.screenShareState,
     });
 
     // Send chat history (serialize timestamps)

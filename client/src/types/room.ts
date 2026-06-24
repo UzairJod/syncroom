@@ -10,4 +10,9 @@ export interface RoomState {
   id: string;
   users: User[];
   hostId: string;
+  screenShare?: {
+    active: boolean;
+    sharerId: string | null;
+    sharerName: string | null;
+  };
 }

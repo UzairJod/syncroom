@@ -28,14 +28,6 @@ export function useVoiceChat() {
 
     socket.on('voice-user-joined', (data) => {
       addVoiceUser(data.userId);
-      if (isInVoice && peerManagerRef.current) {
-        // Create peer connection to new voice user
-        const localUser = useRoomStore.getState().localUser;
-        const newUser = useRoomStore.getState().users.find((u) => u.id === data.userId);
-        if (newUser && localUser && newUser.id !== localUser.id) {
-          peerManagerRef.current.addPeer(newUser.socketId, false, socket);
-        }
-      }
     });
 
     socket.on('voice-user-left', (data) => {

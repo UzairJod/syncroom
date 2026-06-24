@@ -6,6 +6,7 @@ import { useRoomStore } from '@/store/useRoomStore';
 import { useChatStore } from '@/store/useChatStore';
 import { useMediaStore } from '@/store/useMediaStore';
 import { useUIStore } from '@/store/useUIStore';
+import { useScreenShareStore } from '@/store/useScreenShareStore';
 import type { User } from '@/types/room';
 
 export function useRoom() {
@@ -25,6 +26,13 @@ export function useRoom() {
       const me = data.users.find((u: User) => u.socketId === socket.id);
       if (me) {
         setLocalUser(me);
+      }
+
+      // Handle late joiner screen share
+      if (data.screenShare && data.screenShare.active && data.screenShare.sharerId) {
+        useScreenShareStore.getState().setSharerInfo(data.screenShare.sharerId, data.screenShare.sharerName || 'Someone');
+        // Tell the host we are ready to receive the stream!
+        socket.emit('ss-ready', { targetId: data.screenShare.sharerId });
       }
     });
 
