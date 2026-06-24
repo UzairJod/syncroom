@@ -52,7 +52,8 @@ export function useScreenShare() {
             stream.getTracks().forEach(t => {
               console.log('[SS]   └─ track:', t.kind, 'readyState:', t.readyState, 'enabled:', t.enabled);
             });
-            useScreenShareStore.getState().setRemoteStream(stream);
+            // 🔴 CRITICAL FIX: Create a NEW MediaStream so Zustand detects the reference change and forces a re-render
+            useScreenShareStore.getState().setRemoteStream(new MediaStream(stream.getTracks()));
           },
           onPeerDisconnected: (peerId) => {
             console.log('[SS] ❌ Peer disconnected:', peerId);
@@ -109,7 +110,7 @@ export function useScreenShare() {
           {
             onRemoteStream: (_peerId, stream) => {
               console.log('[SS] ✅ GOT REMOTE STREAM (on-demand)!');
-              useScreenShareStore.getState().setRemoteStream(stream);
+              useScreenShareStore.getState().setRemoteStream(new MediaStream(stream.getTracks()));
             },
           },
           SS_SIGNALING,
