@@ -28,9 +28,9 @@ export default function RoomPage() {
 
   const { socket, isConnected } = useSocket();
   const { joinRoom, leaveRoom } = useRoom();
-  useChat();
-  useMediaSync();
-  useScreenShare();
+  useChat(true);
+  useMediaSync(true);
+  useScreenShare(true);
   const { isMobile } = useMediaQuery();
   const localUser = useRoomStore((s) => s.localUser);
 

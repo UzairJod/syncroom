@@ -13,7 +13,7 @@ const SS_SIGNALING = {
   iceCandidate: 'ss-ice-candidate' as const,
 };
 
-export function useScreenShare() {
+export function useScreenShare(registerListeners = false) {
   const peerManagerRef = useRef<PeerManager | null>(null);
   const isHostSharingRef = useRef(false);
   const localStreamRef = useRef<MediaStream | null>(null);
@@ -27,10 +27,11 @@ export function useScreenShare() {
 
   // ─── Socket listeners (registered ONCE) ───
   useEffect(() => {
+    if (!registerListeners) return;
     const socket = getSocket();
 
     // === RECEIVER SIDE: someone started sharing ===
-    socket.on('screen-share-started', (data) => {
+    const handleScreenShareStarted = (data: any) => {
       const localUser = useRoomStore.getState().localUser;
       if (!localUser || data.userId === localUser.id) return;
 
@@ -69,20 +70,20 @@ export function useScreenShare() {
         console.log('[SS] 🤝 Sending ss-ready to host:', sharer.socketId);
         socket.emit('ss-ready', { targetId: sharer.socketId });
       }
-    });
+    };
 
     // === RECEIVER SIDE: sharing stopped ===
-    socket.on('screen-share-stopped', () => {
+    const handleScreenShareStopped = () => {
       console.log('[SS] 🛑 Screen share stopped');
       if (peerManagerRef.current && !isHostSharingRef.current) {
         peerManagerRef.current.destroy();
         peerManagerRef.current = null;
       }
       useScreenShareStore.getState().stopSharing();
-    });
+    };
 
     // === HOST SIDE: receiver says they're ready ===
-    socket.on('ss-ready', (data) => {
+    const handleSSReady = (data: any) => {
       console.log('[SS] 🤝 Receiver ready:', data.senderId);
       const pm = peerManagerRef.current;
       const stream = localStreamRef.current;
@@ -95,10 +96,10 @@ export function useScreenShare() {
           hasPM: !!pm, hasStream: !!stream, isSharing: isHostSharingRef.current
         });
       }
-    });
+    };
 
     // === WebRTC signaling ===
-    socket.on('ss-offer', async (data) => {
+    const handleSSOffer = async (data: any) => {
       console.log('[SS] 📨 Got ss-offer from:', data.senderId);
       const pm = peerManagerRef.current;
       if (pm) {
@@ -118,30 +119,37 @@ export function useScreenShare() {
         peerManagerRef.current = newPm;
         await newPm.handleOffer(data.senderId, data.offer, socket);
       }
-    });
+    };
 
-    socket.on('ss-answer', async (data) => {
+    const handleSSAnswer = async (data: any) => {
       console.log('[SS] 📨 Got ss-answer from:', data.senderId);
       if (peerManagerRef.current) {
         await peerManagerRef.current.handleAnswer(data.senderId, data.answer);
       }
-    });
+    };
 
-    socket.on('ss-ice-candidate', async (data) => {
+    const handleSSIceCandidate = async (data: any) => {
       if (peerManagerRef.current) {
         await peerManagerRef.current.handleIceCandidate(data.senderId, data.candidate);
       }
-    });
+    };
+
+    socket.on('screen-share-started', handleScreenShareStarted);
+    socket.on('screen-share-stopped', handleScreenShareStopped);
+    socket.on('ss-ready', handleSSReady);
+    socket.on('ss-offer', handleSSOffer);
+    socket.on('ss-answer', handleSSAnswer);
+    socket.on('ss-ice-candidate', handleSSIceCandidate);
 
     return () => {
-      socket.off('screen-share-started');
-      socket.off('screen-share-stopped');
-      socket.off('ss-ready');
-      socket.off('ss-offer');
-      socket.off('ss-answer');
-      socket.off('ss-ice-candidate');
+      socket.off('screen-share-started', handleScreenShareStarted);
+      socket.off('screen-share-stopped', handleScreenShareStopped);
+      socket.off('ss-ready', handleSSReady);
+      socket.off('ss-offer', handleSSOffer);
+      socket.off('ss-answer', handleSSAnswer);
+      socket.off('ss-ice-candidate', handleSSIceCandidate);
     };
-  }, []); // Empty deps — register once
+  }, [registerListeners]); // Empty deps — register once
 
   // ─── Host: start sharing ───
   const startScreenShare = useCallback(async () => {

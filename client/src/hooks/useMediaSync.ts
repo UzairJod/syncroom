@@ -7,7 +7,7 @@ import { useRoomStore } from '@/store/useRoomStore';
 import { SYNC_INTERVAL_MS, MAX_DRIFT_MS } from '@/lib/constants';
 import type { MediaType } from '@/types/media';
 
-export function useMediaSync() {
+export function useMediaSync(registerListeners = false) {
   const isSyncingRef = useRef(false);
   const syncIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const playerTimeGetterRef = useRef<(() => number) | null>(null);
@@ -15,39 +15,40 @@ export function useMediaSync() {
   const isHost = useRoomStore((s) => s.isHost);
 
   useEffect(() => {
+    if (!registerListeners) return;
     const socket = getSocket();
 
-    socket.on('media-source-set', (data) => {
+    const handleMediaSourceSet = (data: any) => {
       useMediaStore.getState().setMediaSource(data.source, data.type);
-    });
+    };
 
-    socket.on('media-play', (data) => {
+    const handleMediaPlay = (data: any) => {
       isSyncingRef.current = true;
       useMediaStore.getState().setPlayState(true);
       useMediaStore.getState().setCurrentTime(data.currentTime);
       setTimeout(() => { isSyncingRef.current = false; }, 600);
-    });
+    };
 
-    socket.on('media-pause', (data) => {
+    const handleMediaPause = (data: any) => {
       isSyncingRef.current = true;
       useMediaStore.getState().setPlayState(false);
       useMediaStore.getState().setCurrentTime(data.currentTime);
       setTimeout(() => { isSyncingRef.current = false; }, 600);
-    });
+    };
 
-    socket.on('media-seek', (data) => {
+    const handleMediaSeek = (data: any) => {
       isSyncingRef.current = true;
       useMediaStore.getState().setCurrentTime(data.currentTime);
       setTimeout(() => { isSyncingRef.current = false; }, 600);
-    });
+    };
 
-    socket.on('media-speed-change', (data) => {
+    const handleMediaSpeedChange = (data: any) => {
       isSyncingRef.current = true;
       useMediaStore.getState().setPlaybackSpeed(data.speed);
       setTimeout(() => { isSyncingRef.current = false; }, 600);
-    });
+    };
 
-    socket.on('time-sync', (data) => {
+    const handleTimeSync = (data: any) => {
       const store = useMediaStore.getState();
       const localTime = playerTimeGetterRef.current?.() ?? store.currentTime;
       const drift = Math.abs(localTime - data.currentTime);
@@ -56,17 +57,24 @@ export function useMediaSync() {
         store.setCurrentTime(data.currentTime);
         setTimeout(() => { isSyncingRef.current = false; }, 600);
       }
-    });
+    };
+
+    socket.on('media-source-set', handleMediaSourceSet);
+    socket.on('media-play', handleMediaPlay);
+    socket.on('media-pause', handleMediaPause);
+    socket.on('media-seek', handleMediaSeek);
+    socket.on('media-speed-change', handleMediaSpeedChange);
+    socket.on('time-sync', handleTimeSync);
 
     return () => {
-      socket.off('media-source-set');
-      socket.off('media-play');
-      socket.off('media-pause');
-      socket.off('media-seek');
-      socket.off('media-speed-change');
-      socket.off('time-sync');
+      socket.off('media-source-set', handleMediaSourceSet);
+      socket.off('media-play', handleMediaPlay);
+      socket.off('media-pause', handleMediaPause);
+      socket.off('media-seek', handleMediaSeek);
+      socket.off('media-speed-change', handleMediaSpeedChange);
+      socket.off('time-sync', handleTimeSync);
     };
-  }, []);
+  }, [registerListeners]);
 
   // Host periodic time sync
   useEffect(() => {

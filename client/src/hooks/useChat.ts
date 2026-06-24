@@ -6,21 +6,24 @@ import { useChatStore } from '@/store/useChatStore';
 import { sanitizeMessage } from '@/lib/sanitize';
 import { CHAT_RATE_LIMIT, MAX_MESSAGE_LENGTH } from '@/lib/constants';
 
-export function useChat() {
+export function useChat(registerListeners = false) {
   const { addMessage, messages } = useChatStore();
   const messageTimestamps = useRef<number[]>([]);
 
   useEffect(() => {
+    if (!registerListeners) return;
     const socket = getSocket();
 
-    socket.on('new-message', (data) => {
+    const handleNewMessage = (data: any) => {
       addMessage(data);
-    });
+    };
+
+    socket.on('new-message', handleNewMessage);
 
     return () => {
-      socket.off('new-message');
+      socket.off('new-message', handleNewMessage);
     };
-  }, [addMessage]);
+  }, [registerListeners, addMessage]);
 
   const sendMessage = useCallback((content: string): { success: boolean; error?: string } => {
     const trimmed = sanitizeMessage(content);
