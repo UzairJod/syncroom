@@ -35,6 +35,14 @@ export function registerSignalingHandlers(io: TypedServer, socket: TypedSocket):
   });
 
   // ── Screen Share WebRTC Signaling (separate channel) ──
+  socket.on('ss-ready', (data) => {
+    const { targetId } = data;
+    io.to(targetId).emit('ss-ready', {
+      senderId: socket.id,
+    });
+    logger.debug('SS ready signal', { from: socket.id, to: targetId });
+  });
+
   socket.on('ss-offer', (data) => {
     const { targetId, offer } = data;
     io.to(targetId).emit('ss-offer', {

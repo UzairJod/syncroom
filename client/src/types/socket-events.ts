@@ -38,6 +38,7 @@ export interface ClientToServerEvents {
   'screen-share-stop': () => void;
 
   // Screen share WebRTC signaling (separate from voice)
+  'ss-ready': (data: { targetId: string }) => void;
   'ss-offer': (data: { targetId: string; offer: RTCSessionDescriptionInit }) => void;
   'ss-answer': (data: { targetId: string; answer: RTCSessionDescriptionInit }) => void;
   'ss-ice-candidate': (data: { targetId: string; candidate: RTCIceCandidateInit }) => void;
@@ -84,6 +85,7 @@ export interface ServerToClientEvents {
   'screen-share-stopped': (data: { userId: string }) => void;
 
   // Screen share WebRTC signaling (separate from voice)
+  'ss-ready': (data: { senderId: string }) => void;
   'ss-offer': (data: { senderId: string; offer: RTCSessionDescriptionInit }) => void;
   'ss-answer': (data: { senderId: string; answer: RTCSessionDescriptionInit }) => void;
   'ss-ice-candidate': (data: { senderId: string; candidate: RTCIceCandidateInit }) => void;
