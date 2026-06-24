@@ -40,6 +40,19 @@ export function useVoiceChat() {
 
     socket.on('voice-users', (data) => {
       data.userIds.forEach((id) => addVoiceUser(id));
+      
+      // We are the new user joining voice. Connect to all existing voice users!
+      if (useVoiceStore.getState().isInVoice && peerManagerRef.current) {
+        const currentUsers = useRoomStore.getState().users;
+        const localUser = useRoomStore.getState().localUser;
+        
+        data.userIds.forEach((userId) => {
+          const user = currentUsers.find((u) => u.id === userId);
+          if (user && localUser && user.id !== localUser.id) {
+            peerManagerRef.current!.addPeer(user.socketId, true, socket);
+          }
+        });
+      }
     });
 
     socket.on('webrtc-offer', async (data) => {
@@ -135,15 +148,6 @@ export function useVoiceChat() {
 
       startSpeakingDetection(stream);
 
-      // Connect to existing voice users
-      const currentUsers = useRoomStore.getState().users;
-      const localUser = useRoomStore.getState().localUser;
-      voiceUsers.forEach((userId) => {
-        const user = currentUsers.find((u) => u.id === userId);
-        if (user && localUser && user.id !== localUser.id) {
-          pm.addPeer(user.socketId, true, socket);
-        }
-      });
     } catch (err) {
       console.error('Failed to join voice:', err);
       addToast({ type: 'error', message: 'Failed to access microphone' });

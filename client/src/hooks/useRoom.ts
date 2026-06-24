@@ -32,7 +32,10 @@ export function useRoom() {
       if (data.screenShare && data.screenShare.active && data.screenShare.sharerId) {
         useScreenShareStore.getState().setSharerInfo(data.screenShare.sharerId, data.screenShare.sharerName || 'Someone');
         // Tell the host we are ready to receive the stream!
-        socket.emit('ss-ready', { targetId: data.screenShare.sharerId });
+        const sharer = data.users.find((u: User) => u.id === data.screenShare!.sharerId);
+        if (sharer) {
+          socket.emit('ss-ready', { targetId: sharer.socketId });
+        }
       }
     });
 
