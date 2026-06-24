@@ -27,7 +27,13 @@ export default function RoomToolbar() {
   };
 
   return (
-    <div className="flex items-center justify-start sm:justify-center gap-2 px-4 py-3 bg-bg-glass backdrop-blur-xl border-t border-border-glass overflow-x-auto [&::-webkit-scrollbar]:hidden">
+    <div
+      className={`flex items-center justify-start sm:justify-center gap-2 px-4 py-3 overflow-x-auto [&::-webkit-scrollbar]:hidden transition-all duration-300 ${
+        isFullscreen
+          ? 'bg-transparent border-t-0'
+          : 'bg-bg-glass backdrop-blur-xl border-t border-border-glass'
+      }`}
+    >
       {/* Mobile Chat Toggle */}
       <div className="sm:hidden">
         <Button

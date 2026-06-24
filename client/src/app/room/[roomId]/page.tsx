@@ -35,6 +35,8 @@ export default function RoomPage() {
   const { isMobile } = useMediaQuery();
   const localUser = useRoomStore((s) => s.localUser);
   const isFullscreen = useUIStore((s) => s.isFullscreen);
+  const showControls = useUIStore((s) => s.showControls);
+  const setShowControls = useUIStore((s) => s.setShowControls);
 
   // Listen for successful join
   useEffect(() => {
@@ -43,6 +45,21 @@ export default function RoomPage() {
       setIsJoining(false);
     }
   }, [localUser, hasJoined]);
+
+  // Auto-hide controls in fullscreen
+  useEffect(() => {
+    if (!isFullscreen || !showControls) return;
+    const timer = setTimeout(() => {
+      setShowControls(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [isFullscreen, showControls, setShowControls]);
+
+  const handleInteraction = () => {
+    if (isFullscreen) {
+      setShowControls(true);
+    }
+  };
 
   // Listen for room errors
   useEffect(() => {
@@ -143,7 +160,11 @@ export default function RoomPage() {
 
   // === Room View ===
   return (
-    <div className={`h-dvh flex flex-col bg-bg-primary overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}>
+    <div
+      className={`h-dvh flex flex-col bg-bg-primary overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}
+      onClick={handleInteraction}
+      onMouseMove={handleInteraction}
+    >
       <div className={`${isFullscreen ? 'hidden' : 'block'}`}>
         <RoomHeader />
       </div>
@@ -162,7 +183,15 @@ export default function RoomPage() {
         {!isMobile && <Sidebar />}
       </div>
 
-      <div className={`${isFullscreen ? 'absolute bottom-0 left-0 right-0 z-50 bg-black/60 hover:bg-black/90 transition-colors' : 'block'}`}>
+      <div
+        className={`${
+          isFullscreen
+            ? `absolute bottom-0 left-0 right-0 z-50 transition-opacity duration-300 ${
+                showControls ? 'opacity-100' : 'opacity-0 pointer-events-none'
+              }`
+            : 'block'
+        }`}
+      >
         <RoomToolbar />
       </div>
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
+import { useUIStore } from '@/store/useUIStore';
 
 interface ScreenShareViewProps {
   stream: MediaStream | null;
@@ -65,6 +66,8 @@ export default function ScreenShareView({ stream, sharerName }: ScreenShareViewP
     };
   }, [stream]); // Runs when the stream object reference changes
 
+  const showControls = useUIStore((s) => s.showControls);
+
   if (!stream) return null;
 
   return (
@@ -79,7 +82,11 @@ export default function ScreenShareView({ stream, sharerName }: ScreenShareViewP
         // Also adding these attributes helps on some mobile browsers
         controls={false}
       />
-      <div className="absolute top-3 left-3 flex items-center gap-2 px-3 py-1.5 bg-red-500/90 backdrop-blur-sm rounded-lg text-xs font-medium text-white z-10">
+      <div 
+        className={`absolute top-3 left-3 flex items-center gap-2 px-3 py-1.5 bg-red-500/90 backdrop-blur-sm rounded-lg text-xs font-medium text-white z-10 transition-opacity duration-300 ${
+          showControls ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+      >
         <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
         🖥️ Screen shared by {sharerName}
       </div>

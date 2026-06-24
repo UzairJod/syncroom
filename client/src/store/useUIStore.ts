@@ -14,6 +14,7 @@ interface UIStore {
   mediaModalOpen: boolean;
   subtitleSettingsOpen: boolean;
   isFullscreen: boolean;
+  showControls: boolean;
   toasts: Toast[];
   toggleSidebar: () => void;
   setSidebarOpen: (open: boolean) => void;
@@ -23,6 +24,7 @@ interface UIStore {
   toggleSubtitleSettings: () => void;
   toggleFullscreen: () => void;
   setFullscreen: (fs: boolean) => void;
+  setShowControls: (show: boolean) => void;
   addToast: (toast: Omit<Toast, 'id'>) => void;
   removeToast: (id: string) => void;
 }
@@ -35,6 +37,7 @@ export const useUIStore = create<UIStore>((set) => ({
   mediaModalOpen: false,
   subtitleSettingsOpen: false,
   isFullscreen: false,
+  showControls: true,
   toasts: [],
 
   toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
@@ -45,6 +48,7 @@ export const useUIStore = create<UIStore>((set) => ({
   toggleSubtitleSettings: () => set((s) => ({ subtitleSettingsOpen: !s.subtitleSettingsOpen })),
   toggleFullscreen: () => set((s) => ({ isFullscreen: !s.isFullscreen })),
   setFullscreen: (fs) => set({ isFullscreen: fs }),
+  setShowControls: (show) => set({ showControls: show }),
 
   addToast: (toast) => {
     const id = `toast-${++toastIdCounter}`;
