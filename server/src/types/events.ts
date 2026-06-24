@@ -50,7 +50,7 @@ export interface ClientToServerEvents {
 // ──────────────────────────────────────────────────
 export interface ServerToClientEvents {
   // Room events
-  'room-state': (data: { id: string; users: Array<{ id: string; socketId: string; displayName: string; isHost: boolean; joinedAt: number }>; hostId: string }) => void;
+  'room-state': (data: { id: string; users: Array<{ id: string; socketId: string; displayName: string; isHost: boolean; joinedAt: number }>; hostId: string; screenShare?: { active: boolean; sharerId: string | null; sharerName: string | null } }) => void;
   'user-joined': (data: { id: string; socketId: string; displayName: string; isHost: boolean; joinedAt: number }) => void;
   'user-left': (data: { userId: string }) => void;
   'host-changed': (data: { newHostId: string }) => void;
