@@ -29,11 +29,20 @@ export default function Sidebar() {
       {/* Sidebar panel */}
       <aside
         className={`
-          bg-bg-glass backdrop-blur-xl border-t md:border-t-0 md:border-l border-border-glass
-          flex flex-col flex-1 w-full
-          md:h-full md:flex-none
-          transition-all duration-300 ease-in-out
-          ${sidebarOpen ? 'md:w-[300px] lg:w-[350px]' : 'md:w-0 md:overflow-hidden'}
+          bg-bg-glass backdrop-blur-xl border-border-glass
+          flex flex-col transition-all duration-300 ease-in-out
+          
+          /* Mobile Portrait (Default) */
+          w-full flex-1 border-t
+          
+          /* Landscape overrides */
+          landscape:w-[40vw] landscape:max-w-[350px] landscape:flex-none landscape:h-[100dvh] landscape:border-t-0 landscape:border-l
+          
+          /* Desktop/Tablet overrides */
+          md:flex-none md:h-full md:border-t-0 md:border-l
+          
+          /* State logic (Only hide on md screens if explicitly closed, but don't hide on pure landscape mobile if under 768px... wait, md:w-0 overrides landscape if it applies. Let's use ! for landscape to ensure it stays open on small phones) */
+          ${sidebarOpen ? 'md:w-[300px] lg:w-[350px]' : 'md:w-0 md:overflow-hidden landscape:md:w-[300px] landscape:lg:w-[350px]'}
         `}
       >
         {/* Tabs */}

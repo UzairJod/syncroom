@@ -158,7 +158,7 @@ export default function RoomPage() {
   // === Room View ===
   return (
     <div
-      className={`h-[100dvh] flex flex-col md:flex-row bg-bg-primary overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}
+      className={`h-[100dvh] flex flex-col landscape:flex-row md:flex-row bg-bg-primary overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}
       onClick={handleInteraction}
       onMouseMove={handleInteraction}
       onTouchStart={handleInteraction}
