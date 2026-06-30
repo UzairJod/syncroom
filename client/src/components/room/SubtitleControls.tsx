@@ -30,7 +30,7 @@ export default function SubtitleControls() {
       />
 
       {isOpen && (
-        <div className="absolute bottom-full right-0 mb-2 w-72 bg-bg-secondary/95 backdrop-blur-xl border border-border-glass rounded-xl shadow-2xl shadow-black/50 p-4 space-y-4 z-50">
+        <div className="absolute bottom-full right-0 mb-2 w-[calc(100vw-2rem)] sm:w-72 max-w-[288px] bg-bg-secondary/95 backdrop-blur-xl border border-border-glass rounded-xl shadow-2xl shadow-black/50 p-3 sm:p-4 space-y-3 sm:space-y-4 z-50">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-text-primary">Subtitles</span>
             <button

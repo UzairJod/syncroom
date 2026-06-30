@@ -42,7 +42,7 @@ export default function HomePage() {
       </div>
 
       {/* Header */}
-      <header className="relative z-10 flex items-center justify-between px-6 py-4">
+      <header className="relative z-10 flex items-center justify-between px-4 sm:px-6 py-4 safe-area-top">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-blue to-accent-purple flex items-center justify-center shadow-lg shadow-accent-purple/30">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
@@ -56,11 +56,11 @@ export default function HomePage() {
       </header>
 
       {/* Hero */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-12">
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
         <div className="text-center max-w-3xl mx-auto space-y-8">
           {/* Title */}
           <div className="space-y-4">
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-tight">
+            <h1 className="text-3xl min-[375px]:text-4xl sm:text-6xl lg:text-7xl font-extrabold leading-tight">
               <span className="bg-gradient-to-r from-white via-white to-text-secondary bg-clip-text text-transparent">
                 Watch together.
               </span>
@@ -89,15 +89,15 @@ export default function HomePage() {
               <span className="text-text-muted text-sm">or</span>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
               <Input
                 placeholder="Enter room ID..."
                 value={joinId}
                 onChange={(e) => setJoinId(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleJoinRoom()}
-                className="w-48"
+                className="flex-1 sm:w-48 sm:flex-none"
               />
-              <Button variant="secondary" onClick={handleJoinRoom}>
+              <Button variant="secondary" onClick={handleJoinRoom} className="shrink-0">
                 Join
               </Button>
             </div>
@@ -105,11 +105,11 @@ export default function HomePage() {
         </div>
 
         {/* Features Grid */}
-        <div className="mt-20 w-full max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="mt-12 sm:mt-20 w-full max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {FEATURES.map((feature) => (
             <div
               key={feature.title}
-              className="group p-6 bg-bg-glass backdrop-blur-md border border-border-glass rounded-2xl hover:border-white/15 hover:bg-white/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/20"
+              className="group p-4 sm:p-6 bg-bg-glass backdrop-blur-md border border-border-glass rounded-2xl hover:border-white/15 hover:bg-white/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/20"
             >
               <span className="text-3xl block mb-3">{feature.icon}</span>
               <h3 className="text-base font-semibold text-text-primary mb-1">{feature.title}</h3>
@@ -120,7 +120,7 @@ export default function HomePage() {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 text-center py-6 text-xs text-text-muted">
+      <footer className="relative z-10 text-center py-6 text-xs text-text-muted safe-area-bottom">
         Built with ❤️ using Next.js, Socket.IO & WebRTC
       </footer>
     </div>

@@ -171,7 +171,7 @@ export default function RoomPage() {
 
       <div className="flex-1 flex overflow-hidden relative bg-black">
         {/* Main content */}
-        <div className={`flex-1 flex flex-col overflow-hidden ${isFullscreen ? 'p-0' : 'p-4'}`}>
+        <div className={`flex-1 flex flex-col overflow-hidden ${isFullscreen ? 'p-0' : 'p-1 sm:p-4'}`}>
           <div className="flex-1 flex items-center justify-center">
             <div className={`w-full flex items-center justify-center ${isFullscreen ? 'h-full max-w-none' : 'max-w-5xl'}`}>
               <MediaPlayer />

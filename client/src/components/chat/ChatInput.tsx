@@ -74,7 +74,7 @@ export default function ChatInput() {
         <button
           onClick={handleSend}
           disabled={!message.trim()}
-          className="shrink-0 w-8 h-8 rounded-lg bg-gradient-to-r from-accent-blue to-accent-purple flex items-center justify-center text-white disabled:opacity-30 disabled:cursor-not-allowed hover:brightness-110 transition-all"
+          className="shrink-0 w-10 h-10 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-r from-accent-blue to-accent-purple flex items-center justify-center text-white disabled:opacity-30 disabled:cursor-not-allowed hover:brightness-110 transition-all"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <line x1="22" y1="2" x2="11" y2="13" />

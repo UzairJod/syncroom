@@ -32,7 +32,7 @@ interface UIStore {
 let toastIdCounter = 0;
 
 export const useUIStore = create<UIStore>((set) => ({
-  sidebarOpen: true,
+  sidebarOpen: false,
   sidebarTab: 'chat',
   mediaModalOpen: false,
   subtitleSettingsOpen: false,

@@ -20,7 +20,7 @@ export default function RoomHeader() {
   };
 
   return (
-    <header className="flex items-center justify-between px-4 py-3 bg-bg-glass backdrop-blur-xl border-b border-border-glass">
+    <header className="flex items-center justify-between px-3 sm:px-4 py-2 sm:py-3 bg-bg-glass backdrop-blur-xl border-b border-border-glass safe-area-top">
       {/* Left: Logo + Room ID */}
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2">
@@ -32,7 +32,7 @@ export default function RoomHeader() {
           <span className="font-bold text-text-primary hidden sm:inline">SyncRoom</span>
         </div>
         <div className="h-5 w-px bg-border-glass hidden sm:block" />
-        <span className="text-sm text-text-secondary font-mono">{roomId}</span>
+        <span className="text-xs sm:text-sm text-text-secondary font-mono max-w-[100px] sm:max-w-none truncate">{roomId}</span>
       </div>
 
       {/* Right: Actions */}

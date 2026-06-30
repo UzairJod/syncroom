@@ -49,14 +49,14 @@ export default function EmojiPicker({ onSelect, onClose }: EmojiPickerProps) {
         {allEmojis.map(([category, emojis]) => (
           <div key={category}>
             <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider px-1 py-1">{category}</p>
-            <div className="grid grid-cols-8 gap-0.5">
+            <div className="grid grid-cols-6 sm:grid-cols-8 gap-0.5">
               {emojis
                 .filter((e) => !search || e.includes(search))
                 .map((emoji) => (
                   <button
                     key={emoji}
                     onClick={() => onSelect(emoji)}
-                    className="w-8 h-8 flex items-center justify-center text-lg rounded-md hover:bg-white/10 transition-colors"
+                    className="w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center text-lg rounded-md hover:bg-white/10 active:bg-white/15 transition-colors"
                   >
                     {emoji}
                   </button>

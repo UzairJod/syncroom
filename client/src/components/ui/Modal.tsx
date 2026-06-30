@@ -51,7 +51,7 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'ma
         `}
       >
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-border-glass">
+          <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-border-glass">
             <h2 className="text-lg font-semibold text-text-primary">{title}</h2>
             <button
               onClick={onClose}
@@ -63,7 +63,7 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'ma
             </button>
           </div>
         )}
-        <div className="p-6 max-h-[85vh] overflow-y-auto [&::-webkit-scrollbar]:hidden">{children}</div>
+        <div className="p-4 sm:p-6 max-h-[80vh] sm:max-h-[85vh] overflow-y-auto [&::-webkit-scrollbar]:hidden">{children}</div>
       </div>
     </div>,
     document.body,

@@ -4,6 +4,8 @@ import './globals.css';
 import Providers from './providers';
 import ToastContainer from '@/components/ui/Toast';
 
+import Watermark from '@/components/ui/Watermark';
+
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
@@ -26,6 +28,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -35,6 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           {children}
           <ToastContainer />
+          <Watermark />
         </Providers>
       </body>
     </html>

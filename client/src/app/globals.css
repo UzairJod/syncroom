@@ -128,3 +128,22 @@ video::cue {
   font-size: 16px;
   font-family: inherit;
 }
+
+/* ===== Safe Area Support ===== */
+@supports (padding: env(safe-area-inset-top)) {
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* ===== Mobile-specific adjustments ===== */
+@media (max-width: 640px) {
+  .animate-orb-1,
+  .animate-orb-2 {
+    opacity: 0.5;
+    transform: scale(0.6);
+  }
+}

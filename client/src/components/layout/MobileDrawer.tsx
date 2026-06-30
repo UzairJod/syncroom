@@ -51,7 +51,7 @@ export default function MobileDrawer() {
 
       {/* Drawer */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-40 bg-bg-secondary/95 backdrop-blur-xl border-t border-border-glass rounded-t-2xl"
+        className="fixed bottom-0 left-0 right-0 z-40 bg-bg-secondary/95 backdrop-blur-xl border-t border-border-glass rounded-t-2xl safe-area-bottom"
         style={{
           height: `${height}%`,
           transition: isDragging ? 'none' : 'height 0.3s ease-out',
@@ -62,7 +62,7 @@ export default function MobileDrawer() {
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          className="flex justify-center py-3 cursor-grab active:cursor-grabbing"
+          className="flex justify-center py-3 cursor-grab active:cursor-grabbing min-h-[44px] items-center"
         >
           <div className="w-10 h-1 bg-white/20 rounded-full" />
         </div>
@@ -86,7 +86,7 @@ export default function MobileDrawer() {
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-hidden" style={{ height: 'calc(100% - 80px)' }}>
+        <div className="flex-1 overflow-hidden flex flex-col" style={{ height: 'calc(100% - 88px)' }}>
           {sidebarTab === 'chat' ? <ChatPanel /> : <ParticipantList />}
         </div>
       </div>

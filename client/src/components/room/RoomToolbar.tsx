@@ -28,7 +28,7 @@ export default function RoomToolbar() {
 
   return (
     <div
-      className={`flex items-center justify-start sm:justify-center gap-2 px-4 py-3 overflow-x-auto [&::-webkit-scrollbar]:hidden transition-all duration-300 ${
+      className={`flex items-center justify-start sm:justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 sm:py-3 overflow-x-auto [&::-webkit-scrollbar]:hidden transition-all duration-300 safe-area-bottom ${
         isFullscreen
           ? 'bg-transparent border-t-0'
           : 'bg-bg-glass backdrop-blur-xl border-t border-border-glass'

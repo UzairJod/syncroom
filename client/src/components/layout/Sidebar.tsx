@@ -1,11 +1,17 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useUIStore } from '@/store/useUIStore';
 import ChatPanel from '@/components/chat/ChatPanel';
 import ParticipantList from '@/components/participants/ParticipantList';
 
 export default function Sidebar() {
-  const { sidebarOpen, sidebarTab, setSidebarTab, toggleSidebar } = useUIStore();
+  const { sidebarOpen, sidebarTab, setSidebarTab, setSidebarOpen, toggleSidebar } = useUIStore();
+
+  // Auto-open sidebar on desktop mount
+  useEffect(() => {
+    setSidebarOpen(true);
+  }, [setSidebarOpen]);
 
   return (
     <>
@@ -13,7 +19,7 @@ export default function Sidebar() {
       <button
         onClick={toggleSidebar}
         className="absolute top-1/2 -translate-y-1/2 right-0 z-30 w-6 h-12 bg-bg-glass backdrop-blur-xl border border-border-glass border-r-0 rounded-l-lg flex items-center justify-center text-text-muted hover:text-text-primary transition-colors lg:hidden"
-        style={{ right: sidebarOpen ? '350px' : '0' }}
+        style={{ right: sidebarOpen ? '300px' : '0' }}
       >
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
           {sidebarOpen ? <polyline points="9 18 15 12 9 6" /> : <polyline points="15 18 9 12 15 6" />}
@@ -26,7 +32,7 @@ export default function Sidebar() {
           h-full bg-bg-glass backdrop-blur-xl border-l border-border-glass
           flex flex-col
           transition-all duration-300 ease-in-out
-          ${sidebarOpen ? 'w-[350px]' : 'w-0 overflow-hidden'}
+          ${sidebarOpen ? 'w-[300px] lg:w-[350px]' : 'w-0 overflow-hidden'}
         `}
       >
         {/* Tabs */}
