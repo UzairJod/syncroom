@@ -51,11 +51,40 @@ export default function YouTubePlayer() {
   const playerRef = useRef<YT.Player | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const isSyncingLocalRef = useRef(false);
-  const { mediaSource, isPlaying, currentTime, playbackSpeed } = useMediaStore();
+  const { mediaSource, isPlaying, currentTime, playbackSpeed, volume, isMuted, setCurrentTime, setDuration, setPlayState } = useMediaStore();
   const isHost = useRoomStore((s) => s.isHost);
   const { play, pause, seek, setSpeed, registerTimeGetter, isSyncing } = useMediaSync();
 
   const videoId = extractYouTubeId(mediaSource);
+
+  // Time tracker interval
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (playerRef.current && playerRef.current.getCurrentTime && !isSyncingLocalRef.current) {
+        try {
+          setCurrentTime(playerRef.current.getCurrentTime());
+          // YT duration is not always available immediately
+          const dur = (playerRef.current as any).getDuration?.();
+          if (dur) setDuration(dur);
+        } catch (e) {}
+      }
+    }, 250); // 4Hz update rate for smooth scrubber
+    return () => clearInterval(interval);
+  }, [setCurrentTime, setDuration]);
+
+  // Sync volume and mute
+  useEffect(() => {
+    if (playerRef.current && (playerRef.current as any).setVolume) {
+      try {
+        if (isMuted) {
+          (playerRef.current as any).mute?.();
+        } else {
+          (playerRef.current as any).unMute?.();
+          (playerRef.current as any).setVolume?.(Math.round(volume * 100));
+        }
+      } catch (e) {}
+    }
+  }, [volume, isMuted]);
 
   // Load YouTube IFrame API
   useEffect(() => {
@@ -78,7 +107,8 @@ export default function YouTubePlayer() {
         videoId,
         playerVars: {
           autoplay: 0,
-          controls: isHost() ? 1 : 0,
+          controls: 0, // Disable native controls completely
+          disablekb: 1, // Disable keyboard controls so our overlay can handle them
           modestbranding: 1,
           rel: 0,
           playsinline: 1,
@@ -120,13 +150,15 @@ export default function YouTubePlayer() {
       switch (event.data) {
         case 1: // PLAYING
           play(time);
+          setPlayState(true);
           break;
         case 2: // PAUSED
           pause(time);
+          setPlayState(false);
           break;
       }
     },
-    [isHost, play, pause, isSyncing],
+    [isHost, play, pause, isSyncing, setPlayState],
   );
 
   // Sync: apply remote play/pause/seek

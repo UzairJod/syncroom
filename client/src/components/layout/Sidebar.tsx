@@ -15,10 +15,10 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Toggle button (always visible) */}
+      {/* Toggle button (hidden on mobile, visible on tablet, hidden on desktop) */}
       <button
         onClick={toggleSidebar}
-        className="absolute top-1/2 -translate-y-1/2 right-0 z-30 w-6 h-12 bg-bg-glass backdrop-blur-xl border border-border-glass border-r-0 rounded-l-lg flex items-center justify-center text-text-muted hover:text-text-primary transition-colors lg:hidden"
+        className="hidden md:flex lg:hidden absolute top-1/2 -translate-y-1/2 z-30 w-6 h-12 bg-bg-glass backdrop-blur-xl border border-border-glass border-r-0 rounded-l-lg items-center justify-center text-text-muted hover:text-text-primary transition-colors"
         style={{ right: sidebarOpen ? '300px' : '0' }}
       >
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -29,10 +29,11 @@ export default function Sidebar() {
       {/* Sidebar panel */}
       <aside
         className={`
-          h-full bg-bg-glass backdrop-blur-xl border-l border-border-glass
-          flex flex-col
+          bg-bg-glass backdrop-blur-xl border-t md:border-t-0 md:border-l border-border-glass
+          flex flex-col flex-1 w-full
+          md:h-full md:flex-none
           transition-all duration-300 ease-in-out
-          ${sidebarOpen ? 'w-[300px] lg:w-[350px]' : 'w-0 overflow-hidden'}
+          ${sidebarOpen ? 'md:w-[300px] lg:w-[350px]' : 'md:w-0 md:overflow-hidden'}
         `}
       >
         {/* Tabs */}

@@ -7,7 +7,6 @@ import { useRoom } from '@/hooks/useRoom';
 import { useChat } from '@/hooks/useChat';
 import { useMediaSync } from '@/hooks/useMediaSync';
 import { useScreenShare } from '@/hooks/useScreenShare';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { useRoomStore } from '@/store/useRoomStore';
 import { useUIStore } from '@/store/useUIStore';
 import RoomHeader from '@/components/room/RoomHeader';
@@ -15,7 +14,6 @@ import RoomToolbar from '@/components/room/RoomToolbar';
 import MediaPlayer from '@/components/room/MediaPlayer';
 import MediaSourceModal from '@/components/room/MediaSourceModal';
 import Sidebar from '@/components/layout/Sidebar';
-import MobileDrawer from '@/components/layout/MobileDrawer';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 
@@ -32,7 +30,6 @@ export default function RoomPage() {
   useChat(true);
   useMediaSync(true);
   useScreenShare(true);
-  const { isMobile } = useMediaQuery();
   const localUser = useRoomStore((s) => s.localUser);
   const isFullscreen = useUIStore((s) => s.isFullscreen);
   const showControls = useUIStore((s) => s.showControls);
@@ -161,42 +158,39 @@ export default function RoomPage() {
   // === Room View ===
   return (
     <div
-      className={`h-dvh flex flex-col bg-bg-primary overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}
+      className={`h-[100dvh] flex flex-col md:flex-row bg-bg-primary overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}
       onClick={handleInteraction}
       onMouseMove={handleInteraction}
+      onTouchStart={handleInteraction}
     >
-      <div className={`${isFullscreen ? 'hidden' : 'block'}`}>
-        <RoomHeader />
-      </div>
+      {/* Left/Main Column (Header + Video + Toolbar) */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative bg-black md:bg-bg-primary">
+        
+        <div className={`${isFullscreen ? 'hidden' : 'block'}`}>
+          <RoomHeader />
+        </div>
 
-      <div className="flex-1 flex overflow-hidden relative bg-black">
-        {/* Main content */}
-        <div className={`flex-1 flex flex-col overflow-hidden ${isFullscreen ? 'p-0' : 'p-1 sm:p-4'}`}>
-          <div className="flex-1 flex items-center justify-center">
-            <div className={`w-full flex items-center justify-center ${isFullscreen ? 'h-full max-w-none' : 'max-w-5xl'}`}>
-              <MediaPlayer />
-            </div>
+        <div className="flex-1 flex flex-col items-center justify-center relative bg-black">
+          <div className={`w-full flex items-center justify-center ${isFullscreen ? 'h-full max-w-none' : 'max-w-5xl'}`}>
+            <MediaPlayer />
           </div>
         </div>
 
-        {/* Desktop sidebar */}
-        {!isMobile && <Sidebar />}
+        <div
+          className={`${
+            isFullscreen
+              ? `absolute bottom-0 left-0 right-0 z-50 transition-opacity duration-300 ${
+                  showControls ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                }`
+              : 'block'
+          }`}
+        >
+          <RoomToolbar />
+        </div>
       </div>
 
-      <div
-        className={`${
-          isFullscreen
-            ? `absolute bottom-0 left-0 right-0 z-50 transition-opacity duration-300 ${
-                showControls ? 'opacity-100' : 'opacity-0 pointer-events-none'
-              }`
-            : 'block'
-        }`}
-      >
-        <RoomToolbar />
-      </div>
-
-      {/* Mobile drawer */}
-      {isMobile && <MobileDrawer />}
+      {/* Right/Bottom Column (Sidebar/Chat) */}
+      {!isFullscreen && <Sidebar />}
 
       {/* Media source modal */}
       <MediaSourceModal />

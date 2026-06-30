@@ -7,6 +7,7 @@ import { useUIStore } from '@/store/useUIStore';
 import YouTubePlayer from './YouTubePlayer';
 import VideoPlayer from './VideoPlayer';
 import ScreenShareView from './ScreenShareView';
+import MediaControlsOverlay from './MediaControlsOverlay';
 
 export default function MediaPlayer() {
   const { mediaType, mediaSource } = useMediaStore();
@@ -42,9 +43,10 @@ export default function MediaPlayer() {
   const isFullscreen = useUIStore((s) => s.isFullscreen);
 
   return (
-    <div className={`w-full bg-black flex items-center justify-center ${isFullscreen ? 'h-full' : 'rounded-2xl overflow-hidden border border-border-glass'}`}>
+    <div className={`relative w-full bg-black flex items-center justify-center ${isFullscreen ? 'h-full' : 'aspect-video rounded-2xl overflow-hidden border border-border-glass'}`}>
       {mediaType === 'youtube' && <YouTubePlayer />}
       {mediaType === 'video' && <VideoPlayer />}
+      <MediaControlsOverlay />
     </div>
   );
 }

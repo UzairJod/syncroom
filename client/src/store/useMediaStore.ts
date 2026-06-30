@@ -6,12 +6,18 @@ interface MediaStore {
   mediaType: MediaType;
   isPlaying: boolean;
   currentTime: number;
+  duration: number;
   playbackSpeed: number;
+  volume: number;
+  isMuted: boolean;
   subtitleState: SubtitleState;
   setMediaSource: (source: string, type: MediaType) => void;
   setPlayState: (isPlaying: boolean) => void;
   setCurrentTime: (time: number) => void;
+  setDuration: (time: number) => void;
   setPlaybackSpeed: (speed: number) => void;
+  setVolume: (volume: number) => void;
+  setIsMuted: (isMuted: boolean) => void;
   setSubtitleState: (state: Partial<SubtitleState>) => void;
   reset: () => void;
 }
@@ -30,17 +36,26 @@ export const useMediaStore = create<MediaStore>((set) => ({
   mediaType: 'none',
   isPlaying: false,
   currentTime: 0,
+  duration: 0,
   playbackSpeed: 1,
+  volume: 1,
+  isMuted: false,
   subtitleState: { ...defaultSubtitleState },
 
   setMediaSource: (source, type) =>
-    set({ mediaSource: source, mediaType: type, isPlaying: false, currentTime: 0, playbackSpeed: 1 }),
+    set({ mediaSource: source, mediaType: type, isPlaying: false, currentTime: 0, duration: 0, playbackSpeed: 1 }),
 
   setPlayState: (isPlaying) => set({ isPlaying }),
 
   setCurrentTime: (time) => set({ currentTime: time }),
 
+  setDuration: (time) => set({ duration: time }),
+
   setPlaybackSpeed: (speed) => set({ playbackSpeed: speed }),
+
+  setVolume: (volume) => set({ volume }),
+
+  setIsMuted: (isMuted) => set({ isMuted }),
 
   setSubtitleState: (state) =>
     set((prev) => ({ subtitleState: { ...prev.subtitleState, ...state } })),
@@ -51,6 +66,7 @@ export const useMediaStore = create<MediaStore>((set) => ({
       mediaType: 'none',
       isPlaying: false,
       currentTime: 0,
+      duration: 0,
       playbackSpeed: 1,
       subtitleState: { ...defaultSubtitleState },
     }),

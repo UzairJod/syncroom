@@ -25,21 +25,39 @@ export default function VideoPlayer() {
     }
   }, [registerTimeGetter]);
 
+  const { setCurrentTime, setDuration, setPlayState } = useMediaStore();
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current && !isSyncingLocalRef.current) {
+      setCurrentTime(videoRef.current.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (videoRef.current) {
+      setDuration(videoRef.current.duration);
+    }
+  };
+
+  const handlePlay = () => {
+    if (!isSyncing.current && !isSyncingLocalRef.current) {
+      play(videoRef.current?.currentTime || 0);
+      setPlayState(true);
+    }
+  };
+
+  const handlePause = () => {
+    if (!isSyncing.current && !isSyncingLocalRef.current) {
+      pause(videoRef.current?.currentTime || 0);
+      setPlayState(false);
+    }
+  };
+
   // Host: emit events on player actions
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !isHost()) return;
 
-    const onPlay = () => {
-      if (!isSyncing.current && !isSyncingLocalRef.current) {
-        play(video.currentTime);
-      }
-    };
-    const onPause = () => {
-      if (!isSyncing.current && !isSyncingLocalRef.current) {
-        pause(video.currentTime);
-      }
-    };
     const onSeeked = () => {
       if (!isSyncing.current && !isSyncingLocalRef.current) {
         seek(video.currentTime);
@@ -51,18 +69,14 @@ export default function VideoPlayer() {
       }
     };
 
-    video.addEventListener('play', onPlay);
-    video.addEventListener('pause', onPause);
     video.addEventListener('seeked', onSeeked);
     video.addEventListener('ratechange', onRateChange);
 
     return () => {
-      video.removeEventListener('play', onPlay);
-      video.removeEventListener('pause', onPause);
       video.removeEventListener('seeked', onSeeked);
       video.removeEventListener('ratechange', onRateChange);
     };
-  }, [isHost, play, pause, seek, setSpeed, isSyncing]);
+  }, [isHost, seek, setSpeed, isSyncing]);
 
   // Participant: apply sync state
   useEffect(() => {
@@ -90,6 +104,16 @@ export default function VideoPlayer() {
       isSyncingLocalRef.current = false;
     }, 600);
   }, [isPlaying, currentTime, playbackSpeed, isHost]);
+
+  const { volume, isMuted } = useMediaStore();
+  
+  // Sync volume and mute state
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.volume = volume;
+      videoRef.current.muted = isMuted;
+    }
+  }, [volume, isMuted]);
 
   // Apply subtitle settings
   useEffect(() => {
@@ -126,10 +150,13 @@ export default function VideoPlayer() {
       <video
         ref={videoRef}
         src={videoSrc}
-        controls
         className="w-full h-full"
         playsInline
         crossOrigin="anonymous"
+        onTimeUpdate={handleTimeUpdate}
+        onLoadedMetadata={handleLoadedMetadata}
+        onPlay={handlePlay}
+        onPause={handlePause}
         style={{
           // Custom subtitle styling via CSS
           ...(subtitleState.enabled

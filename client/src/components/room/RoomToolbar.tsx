@@ -34,23 +34,7 @@ export default function RoomToolbar() {
           : 'bg-bg-glass backdrop-blur-xl border-t border-border-glass'
       }`}
     >
-      {/* Mobile Chat Toggle */}
-      <div className="sm:hidden">
-        <Button
-          variant={sidebarOpen ? 'primary' : 'secondary'}
-          size="sm"
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          icon={
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-            </svg>
-          }
-        >
-          <span className="hidden sm:inline">Chat</span>
-        </Button>
-      </div>
 
-      {/* Voice Controls */}
       <Button
         variant={isInVoice ? 'secondary' : 'primary'}
         size="sm"
@@ -150,27 +134,7 @@ export default function RoomToolbar() {
 
       <div className="h-6 w-px bg-border-glass mx-1" />
 
-      {/* Fullscreen */}
-      <Button
-        variant="ghost"
-        size="sm"
-        iconOnly
-        onClick={handleFullscreen}
-        title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
-        icon={
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            {isFullscreen ? (
-              <>
-                <path d="M8 3v3a2 2 0 01-2 2H3m18 0h-3a2 2 0 01-2-2V3m0 18v-3a2 2 0 012-2h3M3 16h3a2 2 0 012 2v3" />
-              </>
-            ) : (
-              <>
-                <path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3" />
-              </>
-            )}
-          </svg>
-        }
-      />
+
 
       {/* Leave Room */}
       <Button variant="danger" size="sm" onClick={handleLeaveRoom} icon={
