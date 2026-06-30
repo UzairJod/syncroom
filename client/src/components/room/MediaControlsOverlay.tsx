@@ -169,7 +169,7 @@ export default function MediaControlsOverlay() {
               }
             />
 
-            <div className="flex items-center gap-2 group relative">
+            <div className="flex items-center gap-1 sm:gap-2 relative">
               <Button
                 variant="ghost"
                 size="sm"
@@ -186,7 +186,7 @@ export default function MediaControlsOverlay() {
                   )
                 }
               />
-              <div className="w-0 overflow-hidden group-hover:w-20 transition-all duration-300 flex items-center">
+              <div className="w-16 sm:w-20 transition-all duration-300 flex items-center">
                 <input
                   type="range"
                   min="0"
