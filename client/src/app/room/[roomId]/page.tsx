@@ -170,8 +170,8 @@ export default function RoomPage() {
           <RoomHeader />
         </div>
 
-        <div className="flex-1 flex flex-col items-center justify-center relative bg-black">
-          <div className={`w-full flex items-center justify-center ${isFullscreen ? 'h-full max-w-none' : 'max-w-5xl'}`}>
+        <div className="flex-1 flex flex-col items-center justify-center relative bg-black min-h-0">
+          <div className={`w-full h-full flex-1 flex items-center justify-center ${isFullscreen ? 'max-w-none' : 'max-w-5xl'}`}>
             <MediaPlayer />
           </div>
         </div>

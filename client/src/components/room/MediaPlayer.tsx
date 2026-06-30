@@ -43,7 +43,7 @@ export default function MediaPlayer() {
   const isFullscreen = useUIStore((s) => s.isFullscreen);
 
   return (
-    <div className={`relative w-full bg-black flex items-center justify-center ${isFullscreen ? 'h-full' : 'aspect-video rounded-2xl overflow-hidden border border-border-glass'}`}>
+    <div className={`relative flex items-center justify-center w-full bg-black ${isFullscreen ? 'h-full' : 'aspect-video landscape:h-full landscape:aspect-auto rounded-2xl overflow-hidden border border-border-glass'}`}>
       {mediaType === 'youtube' && <YouTubePlayer />}
       {mediaType === 'video' && <VideoPlayer />}
       <MediaControlsOverlay />

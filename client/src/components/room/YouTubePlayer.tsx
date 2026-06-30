@@ -197,7 +197,7 @@ export default function YouTubePlayer() {
   const isFullscreen = useUIStore((s) => s.isFullscreen);
 
   return (
-    <div ref={containerRef} className={`relative w-full bg-black ${isFullscreen ? 'h-full' : 'aspect-video'}`}>
+    <div ref={containerRef} className={`relative w-full h-full bg-black`}>
       <div id="yt-player" className="absolute inset-0 w-full h-full" />
     </div>
   );

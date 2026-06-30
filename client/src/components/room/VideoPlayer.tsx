@@ -146,7 +146,7 @@ export default function VideoPlayer() {
   const isFullscreen = useUIStore((s) => s.isFullscreen);
 
   return (
-    <div className={`relative w-full bg-black ${isFullscreen ? 'h-full' : 'aspect-video'}`}>
+    <div className={`relative w-full h-full bg-black`}>
       <video
         ref={videoRef}
         src={videoSrc}
