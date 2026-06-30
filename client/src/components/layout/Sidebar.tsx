@@ -36,10 +36,10 @@ export default function Sidebar() {
           }
         `}
       >
-        {/* Toggle button (hidden on mobile portrait & desktop, visible on tablet & mobile landscape) */}
+        {/* Toggle button (hidden on mobile portrait, visible on all landscape/tablet/desktop screens) */}
         <button
           onClick={toggleSidebar}
-          className="hidden landscape:flex md:flex lg:hidden absolute top-1/2 -left-6 -translate-y-1/2 w-6 h-12 bg-bg-glass backdrop-blur-xl border border-border-glass border-r-0 rounded-l-lg items-center justify-center text-text-muted hover:text-text-primary transition-colors"
+          className="hidden landscape:flex md:flex absolute top-1/2 -left-6 -translate-y-1/2 w-6 h-12 bg-bg-glass backdrop-blur-xl border border-border-glass border-r-0 rounded-l-lg items-center justify-center text-text-muted hover:text-text-primary transition-colors"
         >
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             {sidebarOpen ? <polyline points="9 18 15 12 9 6" /> : <polyline points="15 18 9 12 15 6" />}

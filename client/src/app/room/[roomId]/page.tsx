@@ -190,7 +190,7 @@ export default function RoomPage() {
       </div>
 
       {/* Right/Bottom Column (Sidebar/Chat) */}
-      {!isFullscreen && <Sidebar />}
+      <Sidebar />
 
       {/* Media source modal */}
       <MediaSourceModal />
