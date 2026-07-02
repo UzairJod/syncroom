@@ -1,10 +1,12 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { nanoid } from 'nanoid';
+import { customAlphabet } from 'nanoid';
 import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+
+const generatePin = customAlphabet('0123456789', 6);
 
 const FEATURES = [
   { icon: '▶️', title: 'YouTube Sync', desc: 'Watch YouTube videos in perfect sync with friends' },
@@ -20,7 +22,7 @@ export default function HomePage() {
   const [joinId, setJoinId] = useState('');
 
   const handleCreateRoom = () => {
-    const roomId = nanoid(8);
+    const roomId = generatePin();
     router.push(`/room/${roomId}`);
   };
 
