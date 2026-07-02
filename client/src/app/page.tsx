@@ -49,9 +49,14 @@ export default function HomePage() {
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
           </div>
-          <span className="text-xl font-bold bg-gradient-to-r from-accent-blue to-accent-purple bg-clip-text text-transparent">
-            SyncRoom
-          </span>
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-xl font-bold bg-gradient-to-r from-accent-blue to-accent-purple bg-clip-text text-transparent">
+              SyncRoom
+            </span>
+            <span className="text-xs font-medium text-text-muted">
+              by Uzair
+            </span>
+          </div>
         </div>
       </header>
 

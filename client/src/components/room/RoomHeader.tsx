@@ -29,7 +29,10 @@ export default function RoomHeader() {
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
           </div>
-          <span className="font-bold text-text-primary hidden sm:inline">SyncRoom</span>
+          <div className="hidden sm:flex items-baseline gap-1">
+            <span className="font-bold text-text-primary">SyncRoom</span>
+            <span className="text-[10px] text-text-muted font-medium tracking-wide">by Uzair</span>
+          </div>
         </div>
         <div className="h-5 w-px bg-border-glass hidden sm:block" />
         <span className="text-xs sm:text-sm text-text-secondary font-mono max-w-[100px] sm:max-w-none truncate">{roomId}</span>
