@@ -18,7 +18,7 @@ export default function Sidebar() {
       {/* Sidebar panel */}
       <aside
         className={`
-          relative z-30
+          relative z-30 min-h-0
           bg-bg-glass backdrop-blur-xl border-border-glass
           flex flex-col transition-all duration-300 ease-in-out
           
@@ -47,7 +47,7 @@ export default function Sidebar() {
         </button>
 
         {/* Inner Content Container */}
-        <div className={`flex flex-col w-full h-full transition-opacity duration-300 ${!sidebarOpen ? 'landscape:opacity-0 landscape:overflow-hidden md:opacity-0 md:overflow-hidden' : 'opacity-100'}`}>
+        <div className={`flex flex-col min-h-0 w-full h-full transition-opacity duration-300 ${!sidebarOpen ? 'landscape:opacity-0 landscape:overflow-hidden md:opacity-0 md:overflow-hidden' : 'opacity-100'}`}>
         {/* Tabs */}
         <div className="flex border-b border-border-glass shrink-0">
           {(['chat', 'participants'] as const).map((tab) => (
