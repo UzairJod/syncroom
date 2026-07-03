@@ -100,8 +100,16 @@ export class PeerManager {
 
     // Add screen share track if active
     if (this.screenTrack) {
+      if ('contentHint' in this.screenTrack && this.screenTrack.kind === 'video') {
+        this.screenTrack.contentHint = 'motion';
+      }
       const screenStream = new MediaStream([this.screenTrack]);
-      pc.addTrack(this.screenTrack, screenStream);
+      const sender = pc.addTrack(this.screenTrack, screenStream);
+      
+      // Prioritize framerate over resolution for slow connections
+      const params = sender.getParameters();
+      params.degradationPreference = 'maintain-framerate';
+      sender.setParameters(params).catch(e => console.warn('[WebRTC] Failed to set degradationPreference:', e));
     }
 
     // Handle ICE candidates
@@ -297,11 +305,19 @@ export class PeerManager {
   }
 
   addScreenShareTrack(track: MediaStreamTrack): void {
+    if ('contentHint' in track && track.kind === 'video') {
+      track.contentHint = 'motion';
+    }
+    
     this.screenTrack = track;
     const stream = new MediaStream([track]);
 
     this.peers.forEach((pc) => {
-      pc.addTrack(track, stream);
+      const sender = pc.addTrack(track, stream);
+      
+      const params = sender.getParameters();
+      params.degradationPreference = 'maintain-framerate';
+      sender.setParameters(params).catch(e => console.warn('[WebRTC] Failed to set degradationPreference:', e));
     });
   }
 
