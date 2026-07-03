@@ -20,13 +20,14 @@ export default function Input({ label, error, icon, className = '', ...props }: 
         )}
         <input
           className={`
-            w-full bg-bg-secondary/80 backdrop-blur-sm
+            w-full bg-bg-tertiary
             border border-border-glass rounded-xl
-            px-4 py-2.5 text-sm text-text-primary
-            placeholder:text-text-muted
-            focus:outline-none focus:ring-2 focus:ring-accent-blue/40 focus:border-accent-blue/40
-            transition-all duration-200
-            ${error ? 'border-red-500/50 focus:ring-red-500/40 focus:border-red-500/40' : ''}
+            px-4 py-3 text-sm text-text-primary shadow-inner
+            placeholder:text-text-muted/60
+            focus:outline-none focus:ring-2 focus:ring-accent-purple/20 focus:border-accent-purple/40
+            hover:border-white/10
+            transition-all duration-200 ease-out
+            ${error ? 'border-danger/50 focus:ring-danger/20 focus:border-danger/40' : ''}
             ${icon ? 'pl-10' : ''}
             ${className}
           `}

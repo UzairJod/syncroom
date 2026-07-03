@@ -19,8 +19,7 @@ export default function Sidebar() {
       <aside
         className={`
           relative z-30 min-h-0
-          bg-bg-glass backdrop-blur-xl border-border-glass
-          flex flex-col transition-all duration-300 ease-in-out
+          bg-bg-secondary flex flex-col transition-all duration-300 ease-in-out
           
           /* Mobile Portrait (Default) */
           w-full flex-1 border-t
@@ -49,21 +48,29 @@ export default function Sidebar() {
         {/* Inner Content Container */}
         <div className={`flex flex-col min-h-0 w-full h-full transition-opacity duration-300 ${!sidebarOpen ? 'landscape:opacity-0 landscape:overflow-hidden md:opacity-0 md:overflow-hidden' : 'opacity-100'}`}>
         {/* Tabs */}
-        <div className="flex border-b border-border-glass shrink-0">
-          {(['chat', 'participants'] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setSidebarTab(tab)}
-              className={`
-                flex-1 py-2.5 text-xs font-semibold uppercase tracking-wider transition-all duration-200
-                ${sidebarTab === tab
-                  ? 'text-accent-blue border-b-2 border-accent-blue'
-                  : 'text-text-muted hover:text-text-secondary'}
-              `}
-            >
-              {tab === 'chat' ? '💬 Chat' : '👥 Users'}
-            </button>
-          ))}
+        <div className="flex p-2 shrink-0 border-b border-border-glass bg-bg-secondary/50">
+          <div className="flex w-full bg-bg-primary/50 rounded-lg p-1 relative">
+            {/* Sliding background */}
+            <div 
+              className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-bg-tertiary rounded-md shadow-sm transition-all duration-300 ease-out border border-border-glass"
+              style={{ left: sidebarTab === 'chat' ? '4px' : 'calc(50%)' }}
+            />
+            
+            {(['chat', 'participants'] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setSidebarTab(tab)}
+                className={`
+                  relative z-10 flex-1 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors duration-200
+                  ${sidebarTab === tab
+                    ? 'text-text-primary'
+                    : 'text-text-muted hover:text-text-secondary'}
+                `}
+              >
+                {tab === 'chat' ? '💬 Chat' : '👥 Users'}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Content */}

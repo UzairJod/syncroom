@@ -15,18 +15,18 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    'bg-gradient-to-r from-accent-blue to-accent-purple text-white shadow-lg shadow-accent-purple/20 hover:shadow-accent-purple/40 hover:brightness-110',
+    'bg-gradient-to-r from-accent-purple to-accent-blue text-white shadow-[0_0_15px_rgba(124,92,252,0.3)] hover:shadow-[0_0_20px_rgba(78,168,255,0.4)]',
   secondary:
-    'bg-bg-glass backdrop-blur-md border border-border-glass text-text-primary hover:bg-white/10 hover:border-white/15',
+    'bg-bg-tertiary border border-border-glass text-text-primary hover:bg-white/10 hover:border-white/15 shadow-sm',
   ghost: 'bg-transparent text-text-secondary hover:text-text-primary hover:bg-white/5',
   danger:
-    'bg-red-500/15 text-red-400 border border-red-500/20 hover:bg-red-500/25 hover:border-red-500/40',
+    'bg-danger/10 text-danger border border-danger/20 hover:bg-danger/20 hover:border-danger/30',
 };
 
 const sizeClasses: Record<Size, string> = {
-  sm: 'px-3 py-1.5 text-xs gap-1.5 rounded-lg',
-  md: 'px-4 py-2 text-sm gap-2 rounded-xl',
-  lg: 'px-6 py-3 text-base gap-2.5 rounded-xl',
+  sm: 'h-8 px-3 text-xs gap-1.5 rounded-lg',
+  md: 'h-10 px-4 text-sm gap-2 rounded-xl',
+  lg: 'h-12 px-6 text-base gap-2.5 rounded-xl',
 };
 
 export default function Button({
@@ -46,8 +46,8 @@ export default function Button({
         inline-flex items-center justify-center font-medium
         transition-all duration-200 ease-out
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/50 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary
-        active:scale-[0.97]
-        disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100
+        hover:scale-[1.02] active:scale-[0.97]
+        disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:active:scale-100
         ${variantClasses[variant]}
         ${sizeClasses[size]}
         ${iconOnly ? '!px-2 !py-2 aspect-square' : ''}

@@ -20,31 +20,31 @@ export default function RoomHeader() {
   };
 
   return (
-    <header className="flex items-center justify-between px-3 sm:px-4 py-2 sm:py-3 bg-bg-glass backdrop-blur-xl border-b border-border-glass safe-area-top">
+    <header className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-bg-primary/95 backdrop-blur-xl border-b border-border-glass safe-area-top shadow-sm z-50">
       {/* Left: Logo + Room ID */}
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-blue to-accent-purple flex items-center justify-center">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-accent-purple to-accent-blue flex items-center justify-center shadow-md shadow-accent-purple/20">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
           </div>
-          <div className="hidden sm:flex items-baseline gap-1">
-            <span className="font-bold text-text-primary">SyncRoom</span>
+          <div className="hidden sm:flex items-baseline gap-1.5">
+            <span className="font-bold tracking-tight text-text-primary">SyncRoom</span>
             <span className="text-[10px] text-text-muted font-medium tracking-wide">by Uzair</span>
           </div>
         </div>
-        <div className="h-5 w-px bg-border-glass hidden sm:block" />
-        <span className="text-xs sm:text-sm text-text-secondary font-mono max-w-[100px] sm:max-w-none truncate">{roomId}</span>
+        <div className="h-4 w-[1px] bg-border-glass hidden sm:block" />
+        <span className="text-xs sm:text-sm font-medium text-text-secondary font-mono tracking-wide max-w-[100px] sm:max-w-none truncate">{roomId}</span>
       </div>
 
       {/* Right: Actions */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         {isHost() && <Badge variant="host">♛ Host</Badge>}
 
         <button
           onClick={handleCopyLink}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-text-primary bg-white/5 hover:bg-white/10 border border-border-glass rounded-lg transition-all duration-200"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-text-primary bg-bg-tertiary hover:bg-white/10 border border-border-glass rounded-full transition-all duration-200 shadow-sm"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
@@ -53,7 +53,7 @@ export default function RoomHeader() {
           <span className="hidden sm:inline">Copy Link</span>
         </button>
 
-        <div className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-text-secondary bg-white/5 rounded-lg">
+        <div className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-text-secondary bg-bg-tertiary border border-border-glass rounded-full shadow-sm">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2" />
             <circle cx="9" cy="7" r="4" />
@@ -63,7 +63,7 @@ export default function RoomHeader() {
         </div>
 
         {/* Connection status */}
-        <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-400 shadow-green-400/50 shadow-sm' : 'bg-red-400 shadow-red-400/50 shadow-sm animate-pulse'}`} />
+        <div className={`w-2.5 h-2.5 rounded-full ml-1 ${isConnected ? 'bg-accent-green shadow-[0_0_8px_rgba(34,211,167,0.6)]' : 'bg-danger shadow-[0_0_8px_rgba(239,68,68,0.6)] animate-pulse'}`} />
       </div>
     </header>
   );

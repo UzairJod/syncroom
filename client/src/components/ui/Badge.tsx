@@ -11,9 +11,9 @@ interface BadgeProps {
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
-  host: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-  speaking: 'bg-green-500/20 text-green-400 border-green-500/30',
-  muted: 'bg-red-500/20 text-red-400 border-red-500/30',
+  host: 'bg-warning/20 text-warning border-warning/30',
+  speaking: 'bg-accent-green/20 text-accent-green border-accent-green/30',
+  muted: 'bg-danger/20 text-danger border-danger/30',
   sharing: 'bg-accent-blue/20 text-accent-blue border-accent-blue/30',
   default: 'bg-white/10 text-text-secondary border-white/10',
 };

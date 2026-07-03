@@ -137,9 +137,9 @@ export default function MediaControlsOverlay() {
             value={currentTime || 0}
             onChange={handleSeek}
             disabled={!isHost()}
-            className="flex-1 h-1.5 bg-white/20 rounded-full appearance-none cursor-pointer accent-accent-blue hover:h-2 transition-all"
+            className="flex-1 h-1.5 bg-white/20 rounded-full appearance-none cursor-pointer accent-accent-purple hover:h-2 transition-all duration-300"
             style={{
-              background: `linear-gradient(to right, #3b82f6 ${(currentTime / (duration || 1)) * 100}%, rgba(255,255,255,0.2) ${(currentTime / (duration || 1)) * 100}%)`
+              background: `linear-gradient(to right, #7C5CFC ${(currentTime / (duration || 1)) * 100}%, rgba(255,255,255,0.2) ${(currentTime / (duration || 1)) * 100}%)`
             }}
           />
 

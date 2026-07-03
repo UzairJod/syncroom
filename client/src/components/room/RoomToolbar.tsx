@@ -28,16 +28,16 @@ export default function RoomToolbar() {
 
   return (
     <div
-      className={`flex items-center justify-start sm:justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 sm:py-3 overflow-x-auto [&::-webkit-scrollbar]:hidden transition-all duration-300 safe-area-bottom ${
+      className={`flex items-center justify-start sm:justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 overflow-x-auto [&::-webkit-scrollbar]:hidden transition-all duration-300 safe-area-bottom z-50 shadow-sm ${
         isFullscreen
           ? 'bg-transparent border-t-0'
-          : 'bg-bg-glass backdrop-blur-xl border-t border-border-glass'
+          : 'bg-bg-primary/95 backdrop-blur-xl border-t border-border-glass'
       }`}
     >
 
       <Button
         variant={isInVoice ? 'secondary' : 'primary'}
-        size="sm"
+        size="md"
         onClick={isInVoice ? leaveVoice : joinVoice}
         icon={
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -66,7 +66,7 @@ export default function RoomToolbar() {
       {isInVoice && (
         <Button
           variant={isMuted ? 'danger' : 'secondary'}
-          size="sm"
+          size="md"
           iconOnly
           onClick={toggleMute}
           title={isMuted ? 'Unmute' : 'Mute'}
@@ -95,7 +95,7 @@ export default function RoomToolbar() {
       {isHost() && (
         <Button
           variant={isScreenSharing ? 'danger' : 'secondary'}
-          size="sm"
+          size="md"
           onClick={isScreenSharing ? stopScreenShare : startScreenShare}
           icon={
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -113,7 +113,7 @@ export default function RoomToolbar() {
       {isHost() && (
         <Button
           variant="secondary"
-          size="sm"
+          size="md"
           onClick={() => toggleMediaModal()}
           icon={
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -137,7 +137,7 @@ export default function RoomToolbar() {
       {/* Fullscreen */}
       <Button
         variant="ghost"
-        size="sm"
+        size="md"
         iconOnly
         onClick={handleFullscreen}
         title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
@@ -157,7 +157,7 @@ export default function RoomToolbar() {
       />
 
       {/* Leave Room */}
-      <Button variant="danger" size="sm" onClick={handleLeaveRoom} icon={
+      <Button variant="danger" size="md" onClick={handleLeaveRoom} icon={
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
           <polyline points="16 17 21 12 16 7" />
