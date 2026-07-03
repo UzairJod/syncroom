@@ -164,7 +164,12 @@ export function useScreenShare(registerListeners = false) {
 
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: { cursor: 'always' } as MediaTrackConstraints,
+        video: { 
+          cursor: 'always',
+          frameRate: { ideal: 60, max: 60 },
+          width: { ideal: 1920, max: 3840 },
+          height: { ideal: 1080, max: 2160 }
+        } as MediaTrackConstraints,
         audio: true,
       });
       globalLocalStream = stream;
